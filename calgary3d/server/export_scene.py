@@ -7,6 +7,7 @@ Uses ONLY stdlib + sumolib (no extra packages).
 """
 
 import json
+import os
 import hashlib
 import math
 import sys
@@ -191,8 +192,14 @@ def compute_way_ring(way_elem, node_map, net_offset):
 
 
 def main():
-    calgary_dir = "C:/Users/15874/Documents/TrafficTests/calgary"
-    output_path = "C:/Users/15874/Documents/TrafficTests/calgary3d/web/scene.json"
+    calgary_dir = os.environ.get(
+        'CALGARY_DIR',
+        os.path.normpath(os.path.join(
+            os.path.dirname(os.path.abspath(__file__)),
+            os.pardir, os.pardir, 'calgary')))
+    output_path = os.environ.get('SCENE_OUT', os.path.normpath(os.path.join(
+        os.path.dirname(os.path.abspath(__file__)),
+        os.pardir, 'web', 'scene.json')))
 
     # --- Read SUMO network ---
     net = sumolib.net.readNet(f"{calgary_dir}/dt.net.xml")

@@ -3,5 +3,4 @@
   <time><begin value="0"/><end value="3600"/></time>
   <processing><ignore-route-errors value="true"/><time-to-teleport value="120"/></processing>
   <report><no-warnings value="true"/></report>
-  <gui_only><gui-settings-file value="maps.view.xml"/><window-size value="1400,900"/><delay value="50"/></gui_only>
 </configuration>

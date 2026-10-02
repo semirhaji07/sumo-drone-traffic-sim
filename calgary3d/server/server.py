@@ -13,6 +13,7 @@ GET /sources.json: all data sources (attribution, licence, status)
 import http.server
 import json
 import os
+import shutil
 import queue
 import signal
 import sys
@@ -22,13 +23,34 @@ import traceback
 import argparse
 
 # --- SUMO setup ---
-SUMO_BIN = os.path.normpath(
-    "C:/Users/15874/AppData/Local/hermes/tools/python-3.14.7+20260901-win32-x64/Scripts/sumo.exe"
-)
-CALGARY_DIR = os.path.normpath("C:/Users/15874/Documents/TrafficTests/calgary")
-WEB_DIR = os.path.normpath(
-    os.path.join(os.path.dirname(os.path.abspath(__file__)), "..", "web")
-)
+# Locate SUMO: env var first, then PATH, then the historical local install.
+def _find_sumo():
+    env = os.environ.get('SUMO_BIN')
+    if env and os.path.isfile(env):
+        return os.path.normpath(env)
+    found = shutil.which('sumo')
+    if found:
+        return os.path.normpath(found)
+    for base in (os.environ.get('SUMO_HOME'),):
+        if base:
+            for cand in (os.path.join(base, 'sumo.exe'), os.path.join(base, 'bin', 'sumo.exe')):
+                if os.path.isfile(cand):
+                    return os.path.normpath(cand)
+    # Last resort: the developer machine's tool install, if still present.
+    legacy = os.path.expanduser(
+        "~/AppData/Local/hermes/tools/python-3.14.7+20260901-win32-x64/Scripts/sumo.exe"
+    )
+    return os.path.normpath(legacy)
+
+
+SUMO_BIN = _find_sumo()
+
+# The SUMO network lives in ../calgary relative to calgary3d/, or wherever
+# CALGARY_DIR points. Override with the CALGARY_DIR environment variable.
+_HERE = os.path.dirname(os.path.abspath(__file__))
+CALGARY_DIR = os.path.normpath(os.environ.get(
+    'CALGARY_DIR', os.path.join(_HERE, os.pardir, os.pardir, 'calgary')))
+WEB_DIR = os.path.normpath(os.path.join(_HERE, os.pardir, 'web'))
 
 _script_dir = os.path.dirname(SUMO_BIN)
 if 'SUMO_HOME' not in os.environ:
