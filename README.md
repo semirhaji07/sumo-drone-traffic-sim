@@ -40,15 +40,15 @@ The backend serves the three.js frontend at `/` and the SSE stream at `/stream`.
 
 | Action | Control |
 |--------|---------|
-| Fly camera | Click + drag (mouse look) |
+| Fly camera | Click the scene to capture the mouse, then look around |
 | Move forward/back/left/right | W / S / A / D |
 | Move down / up | Q / E |
 | Boost speed | Hold **Shift** |
 | Adjust fly speed | Scroll wheel |
-| Orbit mode (toggle) | **C** — click a point to orbit around it |
+| Orbit mode (toggle) | **C** — drag to orbit, scroll to zoom |
 | Cinematic auto-orbit | **O** |
 | Open/close control panel | **Tab** |
-| Release mouse (orbit/fly) | **Esc** |
+| Release the mouse | **Esc** |
 | Close / reopen a road | Double-click a road segment |
 
 ## Control Panel Toggles
@@ -71,18 +71,22 @@ The backend serves the three.js frontend at `/` and the SSE stream at `/stream`.
 | `/sources.json` | GET | Data provenance manifest (see below) |
 
 ### `/stream` Event Format
+Each Server-Sent Event is one `data:` line of compact JSON. Coordinates are SUMO
+metres (x east, y north) in the network's own frame, `angle` is degrees clockwise
+from north, and speeds are m/s.
+
 ```json
-{
-  "time": 123.45,
-  "vehicles": [
-    {"id": "veh_0", "x": -114.07, "y": 51.04, "speed": 13.2, "angle": 45, "type": "passenger"}
-  ],
-  "signals": [
-    {"id": "cluster_12", "state": "G", "nextChange": 12.3}
-  ],
-  "stats": {"vehicleCount": 412, "avgSpeed": 11.7, "incidentCount": 3}
-}
+{"t":1286.5,
+ "v":[[2938,818.1,997.5,90.5,0.0],[2945,1030.1,965.1,182.4,0.0]],
+ "tls":{"11013329563":"GGrr"},
+ "stats":{"n":412,"meanSpeed":8.2,"halting":31,
+          "control":{"playbackRate":1.0,"speedScale":1.0,"demandScale":1.0,
+                     "signalMode":"normal","closeEdges":[]}}}
 ```
+
+`v` rows are `[vehicleId, x, y, angleDeg, speedMs]`. `tls` carries only the
+signals whose state changed since the previous frame, plus a full dump every 20
+frames.
 
 ### `/control` Payload Example
 ```json
@@ -121,7 +125,8 @@ This repository **redistributes ODbL-licensed data** from OpenStreetMap.
 | three.js (3D renderer) | **MIT** | three.js authors |
 | Project code (this repo) | **MIT** | Copyright (c) 2026 Semir Haji |
 
-See `LICENSE` for the project's MIT licence text and `NOTICE` for upstream credits.
+See `LICENSE` for the project's MIT licence text. Upstream credits are in the
+table above and in the Data Provenance section.
 
 ## Project Structure
 
@@ -144,6 +149,20 @@ calgary/
 sim/                   # Older synthetic SUMO test outputs
 agent-tests/           # Logs from four original agent tests
 ```
+
+## Known Limitations
+
+- Traffic demand is randomly generated, so congestion patterns are plausible but
+  not a reproduction of a real Calgary commute.
+- Signal timings are simulator defaults, so junction behaviour will not match
+  what Calgary's signals actually do.
+- The congestion colouring is an estimate (see Data Provenance), not measured
+  speeds.
+- The congestion layer and the Data Sources panel load as separate frontend
+  modules; if `/congestion.json` is unavailable the layer falls back to bundled
+  mock data and labels itself MOCK in the interface.
+- Built and verified on Windows. `start_3d.bat` is Windows-only; the Python
+  commands work anywhere SUMO 1.27.1 is installed.
 
 ## Author
 
