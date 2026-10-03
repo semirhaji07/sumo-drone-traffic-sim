@@ -4,15 +4,16 @@ A real-time 3D traffic simulation of Calgary's road network using SUMO (Simulati
 
 ## Features
 
-- **Real road network** from OpenStreetMap (Calgary downtown and surrounding areas)
-- **Live traffic incidents** from City of Calgary Current Traffic Incidents dataset (refresh ~10 min)
-- **3D drone-view visualization** with three.js — fly, orbit, and inspect the city
-- **Speed-coloured vehicles** — red (stopped) → yellow → green (free flow)
-- **Per-street congestion colouring** — typical-by-hour heuristic + incident boosts
-- **Day/night cycle** with building lights and vehicle headlights
-- **Interactive control panel** — playback rate, demand scaling, signal control, edge closure
-- **SSE streaming API** — real-time vehicle positions, signal states, and statistics
-- **Zero API keys required** — runs entirely on public open data
+| **Sim** | Runs downtown Calgary traffic in SUMO and lets you watch and control it |
+| **3D city** | Fly around downtown Calgary in three.js, like a drone |
+| **Live incidents** | Real road closures and crashes from the City of Calgary, on the map |
+| **Control panel** | Change traffic speed, volume, and every traffic light, close roads, switch day/night |
+| **Street names** | Real Calgary street names on the roads |
+
+Everything runs from public data. **No API keys, no accounts, no paid services.**
+
+**If you just want to look around, [start here](STATE.md) — including a known bug
+in the congestion layer you should know about.**
 
 ## Setup — start to finish on a fresh laptop
 
@@ -241,6 +242,8 @@ calgary/
   dt.osm, dt.net.xml, dt.rou.xml, dt.poly.xml, dt.sumocfg  # SUMO model from OSM
 sim/                   # Older synthetic SUMO test outputs
 agent-tests/           # Logs from four original agent tests
+STATE.md               # Project state, open bugs, decisions, gotchas  ← READ THIS
+HISTORY.md             # How it was built, and what broke along the way
 ```
 
 ## Working on this together
@@ -366,4 +369,7 @@ you can go back, and ask it to explain anything it edits before you accept it.
 
 ## Author
 
-**Semir Haji** — semirhaji07@gmail.com — GitHub: [@semirhaji](https://github.com/semirhaji)
+**Semir Haji** — [@semirhaji07](https://github.com/semirhaji07) — semirhaji07@gmail.com
+
+Built with AI coding assistance in places. See `CREDITS.md` for upstream
+attribution and `HISTORY.md` for how it was built.
