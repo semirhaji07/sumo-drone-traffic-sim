@@ -82,7 +82,7 @@ Expected directions of effect are directional expectations only, not quantified 
 
 ## Sources
 
-- Input files: C:/Users/15874/Documents/TrafficTests/counts_current.csv and counts_baseline.csv (analysed this session; computation in an.py, an2.py).
+- Input files: counts_current.csv and counts_baseline.csv (analysed this session; computation in an.py, an2.py).
 - FHWA Signal Timing Manual (split/cycle/offset principles): https://ops.fhwa.dot.gov/publications/fhwahop08024/ (cited from knowledge, page not re-fetched this session).
 - Highway Capacity Manual, TRB (signalised intersection methodology, v/c, saturation flow, PHF): https://www.trb.org/Main/Blurbs/175169.aspx (cited from knowledge, not re-fetched).
 - Statistical method: paired differences of matched 15-min intervals, t critical 2.365 (df 7) for n = 8 and approx 2.0 for n = 40.

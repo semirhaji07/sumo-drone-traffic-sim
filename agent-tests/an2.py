@@ -1,7 +1,7 @@
 import csv, statistics as st, math, json
 import matplotlib; matplotlib.use('Agg')
 import matplotlib.pyplot as plt
-D='C:/Users/15874/Documents/TrafficTests/'
+D='./'
 def load(f, drop_bad=False):
     d={}
     for i,r in enumerate(csv.DictReader(open(D+f,newline=''))):

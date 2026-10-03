@@ -1,5 +1,5 @@
 import csv, collections
-r = list(csv.DictReader(open('C:/Users/15874/Documents/TrafficTests/counts_current.csv')))
+r = list(csv.DictReader(open('counts_current.csv')))
 c = collections.Counter((x['interval_start'], x['approach']) for x in r)
 print([k for k, v in c.items() if v > 1])
 for k, v in c.items():

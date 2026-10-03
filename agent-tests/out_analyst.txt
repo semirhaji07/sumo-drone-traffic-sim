@@ -18,7 +18,7 @@ I wrote the report, and the file and both charts are saved. The one material cha
 
 I installed matplotlib to draw the charts.
 
-Files are in C:/Users/15874/Documents/TrafficTests/:
+Files are in ./:
 - analyst_report.md
 - analyst_counts_by_approach.png
 - analyst_pm_peak_volume.png

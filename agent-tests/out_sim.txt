@@ -31,7 +31,7 @@ cycle60     | 5     | 55.7 (±13.4)  | 28.0 (±3.8)   | 1251 (±20)       |  -4.
 
 If you can send lane counts, approach lengths, speed and the real signal plan, I can rebuild the model with those and calibrate it.
 
-Everything is in C:/Users/15874/Documents/TrafficTests/sim/, and I confirmed the main files are non-empty:
+Everything is in sim/, and I confirmed the main files are non-empty:
 - report.md
 - results.csv
 - results_by_seed.csv

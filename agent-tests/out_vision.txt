@@ -1,4 +1,4 @@
-I can't count anything yet. The file C:/Users/15874/Documents/TrafficTests/nonexistent.mp4 doesn't exist. The TrafficTests folder has no video at all. It holds only counts_baseline.csv, counts_current.csv, and four empty out_*.txt files. I haven't produced any counts, and I won't make any up.
+I can't count anything yet. The file nonexistent.mp4 doesn't exist. The TrafficTests folder has no video at all. It holds only counts_baseline.csv, counts_current.csv, and four empty out_*.txt files. I haven't produced any counts, and I won't make any up.
 
 To go ahead, send me one of these:
 - The correct path to the video.

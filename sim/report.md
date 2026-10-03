@@ -3,7 +3,7 @@
 All results below use invented geometry and signal timing (none was supplied). They show direction of effect only.
 
 ## Inputs
-- Counts: C:/Users/15874/Documents/TrafficTests/counts_current.csv (15-min counts, N/S/E/W, 2026-09-22 06:00-19:45).
+- Counts: counts_current.csv (15-min counts, N/S/E/W, 2026-09-22 06:00-19:45).
 - Simulated window: PM peak 16:00-18:00 (highest demand, about 1233 veh/h total), plus a drain period until the network empties.
 - Data fix: row 2026-09-22 10:15 N had a duplicate with count -5 (invalid). It was dropped and the other row (20) kept. This is outside the simulated window.
 
@@ -36,6 +36,6 @@ cycle60     | 5 | 55.7 (SD 13.4) | 28.0 (SD 3.8) | 1251 (SD 20.4) |  -4.0
 - Simulation shows direction of effect, not safety or regulatory approval.
 - Only the PM peak was run. AM peak and off-peak were not simulated.
 
-## Files (absolute paths, C:/Users/15874/Documents/TrafficTests/sim/)
+## Files (absolute paths, sim/)
 net.net.xml, nodes.nod.xml, edges.edg.xml, routes.rou.xml, tls_baseline.add.xml, tls_split_prop.add.xml, tls_cycle60.add.xml,
 baseline.sumocfg, split_prop.sumocfg, cycle60.sumocfg, results.csv, results_by_seed.csv, report.md, build.py, run.py

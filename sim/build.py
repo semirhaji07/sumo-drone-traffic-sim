@@ -2,8 +2,8 @@ import csv, os, sys, subprocess, json, statistics as st
 import xml.etree.ElementTree as ET
 from collections import defaultdict
 
-W = 'C:/Users/15874/Documents/TrafficTests/sim'
-CSV = 'C:/Users/15874/Documents/TrafficTests/counts_current.csv'
+W = os.path.dirname(os.path.abspath(__file__))
+CSV = os.path.join(os.path.dirname(os.path.abspath(__file__)), os.pardir, 'agent-tests', 'counts_current.csv')
 BIN = os.path.join(sys.prefix, 'Scripts')
 T0, T1 = '16:00', '18:00'   # PM peak window simulated
 TURN = {'s': 0.70, 'l': 0.15, 'r': 0.15}  # PLACEHOLDER turn split

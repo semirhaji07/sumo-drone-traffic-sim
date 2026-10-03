@@ -1,7 +1,7 @@
 import os, sys, json, csv, statistics as st
 import xml.etree.ElementTree as ET
 import traci
-W = 'C:/Users/15874/Documents/TrafficTests/sim'
+W = os.path.dirname(os.path.abspath(__file__))
 os.chdir(W)
 meta = json.load(open('meta.json')); END = meta['END']
 SUMO = os.path.join(sys.prefix, 'Scripts', 'sumo.exe')

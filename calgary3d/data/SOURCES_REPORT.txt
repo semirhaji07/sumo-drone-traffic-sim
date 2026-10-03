@@ -331,7 +331,7 @@ FILE OUTPUT
 ===========
 
 Full JSON documentation written to:
-  C:/Users/15874/Documents/TrafficTests/calgary3d/data/sources_verified.json
+  calgary3d/data/sources_verified.json
 
 Contents:
 - sources[] array with 5 verified data sources
