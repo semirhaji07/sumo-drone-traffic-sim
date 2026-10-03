@@ -14,27 +14,116 @@ A real-time 3D traffic simulation of Calgary's road network using SUMO (Simulati
 - **SSE streaming API** — real-time vehicle positions, signal states, and statistics
 - **Zero API keys required** — runs entirely on public open data
 
-## Requirements
+## Setup — start to finish on a fresh laptop
 
-- **Python 3.14** with the `sumolib`/`traci` package that ships with **SUMO 1.27.1**
-- A modern browser with **WebGL** support (Chrome, Firefox, Edge, Safari)
-- No API keys, no registration, no external services
+Takes about 10 minutes. Nothing needs to be installed by hand except Python.
 
-## How to Run
+### What you need
 
-### Option 1: One-click (Windows)
-Double-click `start_3d.bat` — it launches the SUMO backend and opens the browser.
+| | Version | Why |
+|---|---|---|
+| **Python** | **3.14** | runs the backend |
+| **SUMO** | **1.27.1** | the traffic simulator — installed automatically by pip in step 3 |
+| **Git** | any recent | to clone the repo |
+| **Browser** | Chrome, Firefox, Edge, Safari | any with WebGL (all of them) |
 
-### Option 2: Manual
+**No API keys. No accounts. No paid services.**
+
+Node.js is **not** required — the viewer is plain HTML/JS with no build step.
+
+### Step 1 — Install Python 3.14
+
+Download from <https://www.python.org/downloads/> and run the installer.
+
+**On Windows, tick "Add python.exe to PATH"** on the first screen. This is the
+step people most often miss, and it causes a "python not found" error later.
+
+Check it worked — you should see `Python 3.14.x`:
+
 ```bash
-# Terminal 1: Start the backend (SSE on port 8765)
-python server/server.py
-
-# Terminal 2: Open the viewer
-# http://localhost:8765/
+python --version
 ```
 
-The backend serves the three.js frontend at `/` and the SSE stream at `/stream`.
+### Step 2 — Clone the repo
+
+```bash
+git clone https://github.com/semirhaji07/sumo-drone-traffic-sim.git
+cd sumo-drone-traffic-sim
+```
+
+No write access needed to clone. To contribute you'll need to be added as a
+collaborator — see *Working on this together* below.
+
+### Step 3 — Install the Python packages
+
+```bash
+pip install -r calgary3d/requirements.txt
+```
+
+That's one command. It installs **eclipse-sumo 1.27.1** (the simulator itself)
+plus the `traci` and `sumolib` Python modules, all pinned to matching versions.
+
+### Step 4 — Start it
+
+**Windows:** double-click `calgary3d\start_3d.bat`
+
+**macOS / Linux:**
+```bash
+cd calgary3d
+./start_3d.sh
+```
+
+**Or do it manually, either OS:**
+```bash
+cd calgary3d
+python -u server/server.py
+```
+
+Then open **<http://localhost:8765/>**
+
+The first start takes ~10 seconds while SUMO loads the network. You'll see the
+city, then cars appear as the simulation warms up.
+
+### Step 5 — Verify it worked
+
+You should see:
+- The 3D city with roads, buildings, parks and the Bow River
+- Cars coloured by speed (green = moving, red = stopped)
+- A control panel — press **Tab** to toggle it
+- ~170–400 vehicles in the stats readout
+
+### Troubleshooting
+
+| Symptom | Fix |
+|---|---|
+| `python: command not found` | Reinstall Python and tick "Add to PATH", then open a **new** terminal |
+| `sumo.exe not found` | `pip install -r calgary3d/requirements.txt` did not complete. Re-run it, then reopen the terminal |
+| Port 8765 already in use | Another program is on that port. Use `python -u server/server.py --port 9000` and open `http://localhost:9000/` |
+| Blank screen | Your browser has WebGL disabled, or you're offline (three.js loads from a CDN). Try a different browser |
+| No cars appear | Wait ~15 s; SUMO injects traffic gradually. Check the server terminal for errors |
+| `SUMO_HOME is not set properly` | Usually harmless. See the optional section below to silence it |
+
+### Optional — setting SUMO_HOME
+
+Only needed if SUMO complains about missing data files. On Windows, where SUMO is
+installed under `Program Files` and doesn't always self-locate:
+
+```powershell
+# for this terminal session only
+$env:SUMO_HOME = "C:\Program Files\Eclipse SUMO\Sumo-1.27.1"
+
+# permanently, for your user account
+[Environment]::SetEnvironmentVariable("SUMO_HOME", "C:\Program Files\Eclipse SUMO\Sumo-1.27.1", "User")
+```
+
+You can also copy `calgary3d/.env.example` to `calgary3d/.env` and set `SUMO_BIN`
+to the full path of the executable. **Never commit a `.env`** — it's in
+`.gitignore`.
+
+The backend looks for SUMO in this order: the `SUMO_BIN` environment variable →
+`sumo` on your `PATH` → `SUMO_HOME` → the installer's default location. It finds
+the map folder relative to its own location, so the repo can live anywhere on
+your disk.
 
 ## Controls (three.js viewer)
 
@@ -139,16 +228,125 @@ calgary3d/
   web/
     index.html       # three.js viewer entry point
     app.js           # Viewer logic, controls, SSE client
+    congestion.js    # Congestion layer + Data Sources panel
     style.css        # UI styling
     scene.json       # Exported 3D scene (roads, buildings, water, parks)
   data/
     sources_verified.json  # Data provenance manifest (served at /sources.json)
+  requirements.txt   # Pinned Python packages (SUMO, traci, sumolib)
+  .env.example       # Optional local overrides — copy to .env, never commit it
   start_3d.bat       # Windows one-click launcher
+  start_3d.sh        # macOS / Linux launcher
 calgary/
   dt.osm, dt.net.xml, dt.rou.xml, dt.poly.xml, dt.sumocfg  # SUMO model from OSM
 sim/                   # Older synthetic SUMO test outputs
 agent-tests/           # Logs from four original agent tests
 ```
+
+## Working on this together
+
+### If you just want to look
+
+Cloning is enough — no GitHub login needed. Follow the setup steps above.
+
+### If you want to change things
+
+You need write access. Ask Semir to add you as a collaborator:
+**Repo → Settings → Collaborators → Add people**. You only need the
+**Write** role; **Triage** and **Read** are not enough to push.
+
+### The basic loop
+
+```bash
+git clone https://github.com/semirhaji07/sumo-drone-traffic-sim.git
+cd sumo-drone-traffic-sim
+
+# make your changes, then:
+git status                  # check what you actually changed
+git add <specific files>    # never `git add .` on a first pass — review first
+git commit -m "Short description of the change"
+git push
+```
+
+Pull before you start work, so you don't build on a stale copy:
+
+```bash
+git pull
+```
+
+### Using branches — don't push straight to `master`
+
+The default branch is `master`. Direct pushes work, but they make it easy to
+break everyone else's setup. **Branch instead:**
+
+```bash
+git checkout -b fix-congestion-colours   # creates and switches to a new branch
+# ... make your changes ...
+git add -p                               # add changes hunk by hunk, review as you go
+git commit -m "Fix congestion colour ramp at low values"
+git push -u origin fix-congestion-colours
+```
+
+`-u` links the branch to the remote so future pushes are just `git push`.
+Then open a **Pull Request** on GitHub: go to the repo's *Pull requests* tab,
+click *New pull request*, check the branch, write what changed and why, and
+submit. Someone merges it into `master`.
+
+`git add -p` is worth learning. It walks you through each change and asks
+whether to stage it, so you never accidentally commit a debug file or an
+editor backup.
+
+### When two people edit the same file
+
+This is normal and not a crisis. If you push and get rejected:
+
+```bash
+git pull --rebase
+# resolve conflicts in the files git flags, then:
+git add <resolved files>
+git rebase --continue
+git push
+```
+
+If a conflict looks unfixable, `git rebase --abort` returns you to where you
+started. Nothing is lost.
+
+### Commit messages that help
+
+Write the **why**, not the which. The diff already shows which files changed.
+
+- Good: `Fix congestion colour ramp so low levels don't render as free-flow`
+- Bad: `updated stuff`, `fixes`
+
+One logical change per commit. If you'd describe it with "and", split it.
+
+### Never commit
+
+- **`.env`** — any file holding API keys or tokens. Already in `.gitignore`.
+- **`.pyc`, `__pycache__`** — build artefacts. Already ignored.
+- **Large generated files** — re-run the export script instead.
+- **Absolute local paths** like `C:/Users/yourname/...`. Use paths relative to
+  the script file so the code works on every machine.
+
+If you accidentally commit a secret, rotate the key **first**, then rewrite the
+history. Deleting the file in a later commit does not remove it from history.
+
+### Using Claude Code on this repo
+
+Point it at the project and it can work on the code directly:
+
+```bash
+cd sumo-drone-traffic-sim
+claude
+```
+
+Useful prompts that work well here:
+- *"Why does the congestion layer sometimes show white roads when it's enabled?"*
+- *"Add a traffic signal phase display to the control panel."*
+- *"Explain what `export_scene.py` does, then add XYZ."*
+
+Two habits that avoid a lot of pain: commit before you start a large change so
+you can go back, and ask it to explain anything it edits before you accept it.
 
 ## Known Limitations
 
@@ -161,8 +359,10 @@ agent-tests/           # Logs from four original agent tests
 - The congestion layer and the Data Sources panel load as separate frontend
   modules; if `/congestion.json` is unavailable the layer falls back to bundled
   mock data and labels itself MOCK in the interface.
-- Built and verified on Windows. `start_3d.bat` is Windows-only; the Python
-  commands work anywhere SUMO 1.27.1 is installed.
+- three.js loads from a CDN, so the viewer needs an internet connection.
+- Developed and tested on Windows. `start_3d.bat` is Windows-only, but
+  `start_3d.sh` covers macOS and Linux, and the Python commands work anywhere
+  SUMO 1.27.1 is installed.
 
 ## Author
 
